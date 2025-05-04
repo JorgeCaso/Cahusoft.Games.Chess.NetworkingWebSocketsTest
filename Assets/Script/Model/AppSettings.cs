@@ -7,7 +7,8 @@ namespace Assets.Script.Model
         public const string BaseUrlChessWebApi = "https://chesswebapi:4443";
         public static readonly string ApiLoginUrl = $"{BaseUrlChessWebApi}/auth";
         public static readonly string ApiProfileUrl = $"{BaseUrlChessWebApi}/api/profile";
+        public static readonly string ApiGames = $"{BaseUrlChessWebApi}/api/games";
         public static string token = "";
-
+        public static int? userId;
     }
 }

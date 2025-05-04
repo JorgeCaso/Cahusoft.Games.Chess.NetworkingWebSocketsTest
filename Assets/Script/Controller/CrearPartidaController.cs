@@ -1,34 +1,42 @@
 ﻿using Assets.Script.Dtos;
+using Assets.Script.Interfaces;
 using Assets.Script.Model;
+using Assets.Script.Networking;
 using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Networking;
+using UnityEngine.UI;
 
 namespace Assets.Script.Controller
 {
     public class CrearPartidaController : MonoBehaviour
     {
-        public ChessWebSocket socket;
+
         public TMP_Text textoLog;
+        public Button buttonCrearPartida;
+        public ChessWebSocket websocket;
 
-        private string apiUrl = $"{AppSettings.BaseUrlChessWebApi}/api/games";
-
-        public void CrearPartida()
+        void Start()
         {
-            StartCoroutine(EnviarCrearPartidaASymfony());
+            buttonCrearPartida.onClick.AddListener(() => StartCoroutine(CrearPartida()));
+        }
+
+        private IEnumerator CrearPartida()
+        {
+
+            yield return StartCoroutine(EnviarCrearPartidaASymfony());
         }
 
         IEnumerator EnviarCrearPartidaASymfony()
         {
             CrearPartidaDataDto payload = new CrearPartidaDataDto
             {
-                color = "W"
             };
 
             string jsonData = JsonUtility.ToJson(payload);
 
-            UnityWebRequest request = new UnityWebRequest(apiUrl, "POST");
+            UnityWebRequest request = new UnityWebRequest(AppSettings.ApiGames, "POST");
             byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(jsonData);
             request.uploadHandler = new UploadHandlerRaw(bodyRaw);
             request.downloadHandler = new DownloadHandlerBuffer();
@@ -41,16 +49,15 @@ namespace Assets.Script.Controller
             {
                 string json = request.downloadHandler.text;
                 CrearPartidaResponseDto respuesta = JsonUtility.FromJson<CrearPartidaResponseDto>(json);
+
                 textoLog.text += $"\nPartida creada con ID: {respuesta.gameId}";
 
                 MatchSettings.fenCurrent = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
-                MatchSettings.gameId = respuesta.gameId;
-
-                socket.UnirseAPartida(respuesta.gameId);
+                MatchSettings.gameId = int.Parse(respuesta.gameId);
             }
             else
             {
-                textoLog.text += $"\n❌ Error al crear partida: {request.error}";
+                textoLog.text += $"\nError al crear partida: {request.error}";
             }
         }
 

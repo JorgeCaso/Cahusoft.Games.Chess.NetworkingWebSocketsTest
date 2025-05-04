@@ -1,12 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Assets.Script.Dtos
 {
-    internal class UnirsePartidaResponseDto
+    [Serializable]
+    public class UnirsePartidaResponseDto
     {
+        public string type;
+        public string message;
     }
 }

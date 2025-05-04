@@ -5,22 +5,44 @@ using UnityEngine.Networking;
 using UnityEngine;
 using Assets.Script.Model;
 using Assets.Script.Dtos;
+using UnityEngine.UI;
 
 namespace Assets.Script.Controller
 {
     internal class LoginController : MonoBehaviour
     {
-        public TMP_InputField inputUsuario;
-        public TMP_InputField inputPassword;
         public TMP_Text textoLog;
-
-        public static string tokenJwt;
+        public Button buttonUserAdmin;
+        public Button buttonUser1;
+        public Button buttonUser2;
         public static User user;
 
-        public void Login()
+        void Start()
         {
-            string user = inputUsuario.text.Trim();
-            string pass = inputPassword.text.Trim();
+            buttonUserAdmin.onClick.AddListener(() => Login("admin"));
+            buttonUser1.onClick.AddListener(() => Login("user1"));
+            buttonUser2.onClick.AddListener(() => Login("user2"));
+        }
+
+        public void Login(string tipo)
+        {
+            string user = "";
+            string pass = "";
+
+            switch (tipo) {
+                case "admin":
+                    user = "admin@example.com";
+                    pass = "adminpass";
+                    break;
+                case "user1":
+                    user = "user1@example.com";
+                    pass = "user1pass";
+                    break;
+                case "user2":
+                    user = "user2@example.com";
+                    pass = "user2pass";
+                    break;
+            }
 
             if (!string.IsNullOrEmpty(user) && !string.IsNullOrEmpty(pass))
             {
@@ -28,7 +50,7 @@ namespace Assets.Script.Controller
             }
             else
             {
-                textoLog.text += "\n⚠️ Usuario o contraseña vacíos";
+                textoLog.text += "\nUsuario o contraseña vacíos";
             }
         }
 
@@ -55,7 +77,7 @@ namespace Assets.Script.Controller
             }
             else
             {
-                textoLog.text += $"\n❌ Error de login: {request.error}";
+                textoLog.text += $"\nError de login: {request.error}";
             }
         }
 
@@ -68,7 +90,6 @@ namespace Assets.Script.Controller
 
             if (request.result == UnityWebRequest.Result.Success)
             {
-                // ⚠️ Extrae solo los campos que interesan
                 string json = request.downloadHandler.text;
                 UserProfileDto wrapper = JsonUtility.FromJson<UserProfileDto>(json);
 
@@ -78,13 +99,13 @@ namespace Assets.Script.Controller
                     email = wrapper.email
                 };
 
-                textoLog.text += $"\n Usuario: {user.email}";
+                textoLog.text += $"\nUsuario: {user.email}";
 
-                MatchSettings.playerId = user.id.ToString();
+                AppSettings.userId = user.id;
             }
             else
             {
-                textoLog.text += $"\n❌ Error al obtener perfil: {request.error}";
+                textoLog.text += $"\nError al obtener perfil: {request.error}";
             }
         }
     }

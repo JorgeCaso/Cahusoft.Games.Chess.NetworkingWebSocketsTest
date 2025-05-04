@@ -1,12 +1,12 @@
 ﻿using System;
 
-namespace Assets.Script.Model
+namespace Assets.Script.Dtos.Messages
 {
     [Serializable]
-    public class Conexion
+    public class JugadorEntraServidor
     {
         public string type;
         public string partidaId;
-        public string playerId;
+        public string message;
     }
 }

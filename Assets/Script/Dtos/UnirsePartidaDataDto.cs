@@ -1,12 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Assets.Script.Dtos
 {
-    internal class UnirsePartidaDataDto
+    [Serializable]
+    public class UnirsePartidaDataDto
     {
+        public string color;
+        public int player2;
+        public string status;
     }
 }
